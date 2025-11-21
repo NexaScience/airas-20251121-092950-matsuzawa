@@ -30,7 +30,9 @@ wandb:
 compute:
   device: ???
   precision: ???
-model: {}
+model:
+  name: ???
+  adapter: {}
 dataset: {}
 dataloader: {}
 training: {}
