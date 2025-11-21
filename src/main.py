@@ -10,7 +10,7 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path="../config")
+@hydra.main(config_path="../config", config_name="config", version_base="1.2")
 def main(cfg: DictConfig) -> None:
     for field in ("run", "mode", "results_dir"):
         if field not in cfg or cfg[field] in (None, "???"):

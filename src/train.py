@@ -286,7 +286,7 @@ def _optuna_objective(trial: optuna.Trial, base_cfg: DictConfig) -> float:
 # Hydra entry-point ----------------------------------------------------------
 # ---------------------------------------------------------------------------
 
-@hydra.main(config_path="../config")
+@hydra.main(config_path="../config", config_name="config", version_base="1.2")
 def main(cfg: DictConfig) -> None:  # pragma: no cover
     """Hydra entry – merges run-specific YAML, applies mode overrides and trains."""
 
