@@ -13,6 +13,8 @@ hydra:
 # ---------------------------------------------------------------------------
 # Mandatory CLI parameters (not part of run config) -------------------------
 run: ???          # e.g. proposed-iter1-Qwen3-0.6B-gsm8k
+run_id: ???       # Overridden by run-specific YAML or defaults to run parameter
+method: ???       # Overridden by run-specific YAML (e.g., lals, baseline)
 mode: full        # trial | full
 results_dir: outputs/
 
@@ -30,6 +32,7 @@ model: {}
 dataset: {}
 dataloader: {}
 training: {}
+evaluation: {}
 logging: {}
 optuna:
   n_trials: 0
