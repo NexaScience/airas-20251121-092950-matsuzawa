@@ -86,7 +86,7 @@ def load_model_and_tokenizer(cfg, device: torch.device) -> Tuple:
             r=int(cfg.model.adapter.r),
             lora_alpha=int(cfg.model.adapter.alpha),
             lora_dropout=float(cfg.model.adapter.dropout),
-            target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "fc_in", "fc_out"],
+            target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
             bias="none",
             task_type=TaskType.CAUSAL_LM,
         )
