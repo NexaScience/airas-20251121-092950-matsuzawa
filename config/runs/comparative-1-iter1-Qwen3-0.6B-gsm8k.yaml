@@ -1,0 +1,65 @@
+run_id: comparative-1-iter1-Qwen3-0.6B-gsm8k
+method: baseline
+compute:
+  device: cpu
+  precision: int8
+model:
+  name: Qwen/Qwen3-0.6B
+  adapter:
+    type: lora
+    r: 16
+    alpha: 32
+    dropout: 0.05
+dataset:
+  name: gsm8k
+  config: main
+  splits:
+    train: train
+    validation: test
+  preprocessing:
+    max_seq_length: 1024
+    answer_extraction: true
+dataloader:
+  batch_size: 4
+  gradient_accumulation_steps: 8
+training:
+  epochs: 3
+  seed: 42
+  optimizer:
+    type: adamw
+    learning_rate: 2e-5
+    betas: [0.9, 0.98]
+    eps: 1e-8
+    weight_decay: 0.01
+  scheduler:
+    type: cosine
+    num_warmup_steps_ratio: 0.05
+  max_grad_norm: 1.0
+evaluation:
+  metric: accuracy
+  generation:
+    temperature: 0.0
+logging:
+  log_every_n_steps: 50
+optuna:
+  n_trials: 20
+  direction: maximize
+  search_space:
+    learning_rate:
+      type: loguniform
+      low: 1e-5
+      high: 3e-5
+    weight_decay:
+      type: uniform
+      low: 0.0
+      high: 0.05
+    batch_size:
+      type: categorical
+      choices: [2, 4, 8]
+    scheduler_type:
+      type: categorical
+      choices: [cosine, linear]
+    warmup_ratio:
+      type: uniform
+      low: 0.01
+      high: 0.1

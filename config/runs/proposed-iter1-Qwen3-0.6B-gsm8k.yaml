@@ -1,0 +1,78 @@
+run_id: proposed-iter1-Qwen3-0.6B-gsm8k
+method: lals
+compute:
+  device: cpu
+  precision: int8
+model:
+  name: Qwen/Qwen3-0.6B
+  adapter:
+    type: lora
+    r: 16
+    alpha: 32
+    dropout: 0.05
+dataset:
+  name: gsm8k
+  config: main
+  splits:
+    train: train
+    validation: test
+  preprocessing:
+    max_seq_length: 1024
+    answer_extraction: true
+dataloader:
+  batch_size: 4
+  gradient_accumulation_steps: 8
+training:
+  epochs: 3
+  seed: 42
+  optimizer:
+    type: adamw
+    base_learning_rate: 2e-5
+    betas: [0.9, 0.98]
+    eps: 1e-8
+    weight_decay: 0.01
+  scheduler:
+    type: cosine
+    num_warmup_steps_ratio: 0.05
+  lr_scaling:
+    type: lals
+    gamma: 0.7
+    ema_beta: 0.98
+    f_min: 0.5
+    f_max: 1.5
+    eps: 1e-8
+  max_grad_norm: 1.0
+evaluation:
+  metric: accuracy
+  generation:
+    temperature: 0.0
+logging:
+  log_every_n_steps: 50
+optuna:
+  n_trials: 30
+  direction: maximize
+  search_space:
+    base_learning_rate:
+      type: loguniform
+      low: 1e-5
+      high: 3e-5
+    gamma:
+      type: uniform
+      low: 0.5
+      high: 1.0
+    ema_beta:
+      type: uniform
+      low: 0.95
+      high: 0.995
+    f_min:
+      type: uniform
+      low: 0.3
+      high: 0.7
+    f_max:
+      type: uniform
+      low: 1.2
+      high: 2.0
+    warmup_ratio:
+      type: uniform
+      low: 0.01
+      high: 0.1

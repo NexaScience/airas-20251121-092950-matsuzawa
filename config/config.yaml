@@ -1,0 +1,28 @@
+defaults:
+  - _self_
+
+# ---------------------------------------------------------------------------
+# Mandatory CLI parameters (not part of run config) -------------------------
+run: ???          # e.g. proposed-iter1-Qwen3-0.6B-gsm8k
+mode: full        # trial | full
+results_dir: outputs/
+
+# ---------------------------------------------------------------------------
+# Global WandB settings -----------------------------------------------------
+wandb:
+  entity: gengaru617-personal
+  project: 2025-11-21
+  mode: online   # auto-overridden in trial mode
+
+# ---------------------------------------------------------------------------
+# Default placeholders – overwritten by run-specific YAML -------------------
+compute: {}
+model: {}
+dataset: {}
+dataloader: {}
+training: {}
+logging: {}
+optuna:
+  n_trials: 0
+  direction: maximize
+  search_space: {}
