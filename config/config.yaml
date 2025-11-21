@@ -27,7 +27,9 @@ wandb:
 
 # ---------------------------------------------------------------------------
 # Default placeholders – overwritten by run-specific YAML -------------------
-compute: {}
+compute:
+  device: ???
+  precision: ???
 model: {}
 dataset: {}
 dataloader: {}
