@@ -30,7 +30,6 @@ def main(cfg: DictConfig) -> None:
         cmd += [
             "wandb.mode=disabled",
             "optuna.n_trials=0",
-            "training.epochs=1",
         ]
     elif cfg.mode == "full":
         cmd += ["wandb.mode=online"]
