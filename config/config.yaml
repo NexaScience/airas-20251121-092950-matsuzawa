@@ -40,24 +40,24 @@ model:
 dataset:
   name: ???
   config: ???
-  splits: {}
-  preprocessing: {}
+  splits: null
+  preprocessing: null
 dataloader:
   batch_size: ???
   gradient_accumulation_steps: ???
 training:
   epochs: ???
   seed: ???
-  optimizer: {}
-  scheduler: {}
-  lr_scaling: {}
+  optimizer: null
+  scheduler: null
+  lr_scaling: null
   max_grad_norm: ???
 evaluation:
   metric: ???
-  generation: {}
+  generation: null
 logging:
   log_every_n_steps: ???
 optuna:
   n_trials: 0
   direction: maximize
-  search_space: {}
+  search_space: null
