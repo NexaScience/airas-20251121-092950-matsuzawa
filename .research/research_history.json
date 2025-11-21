@@ -6,5 +6,28 @@
     "Qwen3-0.6B fine-tuning",
     "GSM8K elementary math",
     "adaptive learning rate"
+  ],
+  "research_study_list": [
+    {
+      "title": "AutoLRS: Automatic Learning-Rate Schedule by Bayesian Optimization on the Fly"
+    },
+    {
+      "title": "Reverse engineering learned optimizers reveals known and novel mechanisms"
+    },
+    {
+      "title": "Budgeted Training: Rethinking Deep Neural Network Training Under Resource Constraints"
+    },
+    {
+      "title": "QLoRA: Efficient Finetuning of Quantized LLMs"
+    },
+    {
+      "title": "A Careful Examination of Large Language Model Performance on Grade School Arithmetic"
+    },
+    {
+      "title": "Language models are multilingual chain-of-thought reasoners"
+    },
+    {
+      "title": "MoMo: Momentum Models for Adaptive Learning Rates"
+    }
   ]
 }
