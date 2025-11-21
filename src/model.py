@@ -82,11 +82,26 @@ def load_model_and_tokenizer(cfg, device: torch.device) -> Tuple:
 
     # Optional LoRA
     if cfg.model.get("adapter") and cfg.model.adapter.type == "lora" and get_peft_model:
+        # Auto-detect target modules from the model architecture
+        target_modules = []
+        for name, module in model.named_modules():
+            if isinstance(module, torch.nn.Linear):
+                # Extract the layer name (last part of the module path)
+                layer_name = name.split('.')[-1]
+                if layer_name and layer_name not in target_modules:
+                    target_modules.append(layer_name)
+
+        # If no modules found, use common fallback patterns
+        if not target_modules:
+            target_modules = ["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+
+        print(f"[Info] Using LoRA target modules: {target_modules}")
+
         l_cfg = LoraConfig(
             r=int(cfg.model.adapter.r),
             lora_alpha=int(cfg.model.adapter.alpha),
             lora_dropout=float(cfg.model.adapter.dropout),
-            target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=target_modules,
             bias="none",
             task_type=TaskType.CAUSAL_LM,
         )
