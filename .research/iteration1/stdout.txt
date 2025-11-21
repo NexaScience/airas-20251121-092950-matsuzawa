@@ -6,3 +6,11 @@
 Epoch 1: val_acc=0.0000  val_loss=10.8254
 === [TRIAL RUN] PASSED for proposed-iter1-Qwen3-0.6B-gsm8k at Fri Nov 21 19:34:01 UTC 2025 ===
 
+=== [UV SYNC] Start at Fri Nov 21 19:34:32 UTC 2025 ===
+=== [UV SYNC] Finished successfully at Fri Nov 21 19:35:14 UTC 2025 ===
+=== [TRIAL RUN] Start for comparative-1-iter1-Qwen3-0.6B-gsm8k at Fri Nov 21 19:35:14 UTC 2025 ===
+[Launcher] /home/runner/work/airas-20251121-092950-matsuzawa/airas-20251121-092950-matsuzawa/.venv/bin/python3               -u               -m               src.train               run=comparative-1-iter1-Qwen3-0.6B-gsm8k               mode=trial               results_dir=.research/iteration1               wandb.mode=disabled               optuna.n_trials=0
+[Info] Using LoRA target modules: ['c_attn', 'c_proj', 'c_fc', 'lm_head']
+Epoch 1: val_acc=0.0000  val_loss=10.8254
+=== [TRIAL RUN] PASSED for comparative-1-iter1-Qwen3-0.6B-gsm8k at Fri Nov 21 19:35:47 UTC 2025 ===
+
