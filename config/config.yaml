@@ -32,12 +32,31 @@ compute:
   precision: ???
 model:
   name: ???
-  adapter: {}
-dataset: {}
-dataloader: {}
-training: {}
-evaluation: {}
-logging: {}
+  adapter:
+    type: ???
+    r: ???
+    alpha: ???
+    dropout: ???
+dataset:
+  name: ???
+  config: ???
+  splits: {}
+  preprocessing: {}
+dataloader:
+  batch_size: ???
+  gradient_accumulation_steps: ???
+training:
+  epochs: ???
+  seed: ???
+  optimizer: {}
+  scheduler: {}
+  lr_scaling: {}
+  max_grad_norm: ???
+evaluation:
+  metric: ???
+  generation: {}
+logging:
+  log_every_n_steps: ???
 optuna:
   n_trials: 0
   direction: maximize
