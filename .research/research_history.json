@@ -169,7 +169,70 @@
     "iterations": [
       {
         "iteration_id": 1,
-        "method": "Loss-Adaptive LR Scaling (LALS): keep the usual optimizer (AdamW) and preferred schedule (e.g. cosine decay with warm-up) but multiply the scheduled learning rate at every step t by an adaptive factor f_t = clamp( (\\bar L / L_t)^γ , f_min , f_max ).  L_t is the current mini-batch loss, \\bar L is an exponential moving average of recent losses, γ∈[0.5,1] controls strength.  • If the loss spikes (L_t > \\bar L) ⇒ f_t<1 → effective LR is reduced, preventing divergence.  • If the loss keeps decreasing ⇒ f_t>1 (capped by f_max) → slightly larger LR accelerates training.  This is a one-line change after computing loss and requires no extra gradients."
+        "method": "Loss-Adaptive LR Scaling (LALS): keep the usual optimizer (AdamW) and preferred schedule (e.g. cosine decay with warm-up) but multiply the scheduled learning rate at every step t by an adaptive factor f_t = clamp( (\\bar L / L_t)^γ , f_min , f_max ).  L_t is the current mini-batch loss, \\bar L is an exponential moving average of recent losses, γ∈[0.5,1] controls strength.  • If the loss spikes (L_t > \\bar L) ⇒ f_t<1 → effective LR is reduced, preventing divergence.  • If the loss keeps decreasing ⇒ f_t>1 (capped by f_max) → slightly larger LR accelerates training.  This is a one-line change after computing loss and requires no extra gradients.",
+        "experimental_design": {
+          "experiment_summary": "Goal: demonstrate that Loss-Adaptive LR Scaling (LALS) makes low-resource mathematical-reasoning fine-tuning more robust and accurate. Task: few-epoch supervised fine-tuning of an existing 0.6-billion-parameter language model so that, after greedy generation, it produces the exact final answer string to elementary-school word problems from GSM8K. Workflow: 1) load Qwen3-0.6B in 8-bit CPU mode and LoRA adapters (fits into ≤500 MB RAM); 2) prepare GSM8K train/dev splits with answer extraction; 3) run two identical training pipelines that differ only in the learning-rate controller—(a) ordinary AdamW + cosine decay with warm-up; (b) same schedule multiplied each step by the loss-adaptive factor f_t = clamp((L̄/L_t)^γ, f_min, f_max); 4) after each epoch, decode the model’s answer to every dev example, strip formatting, and compare to ground-truth; 5) log accuracy, average loss, and effective LR curves; 6) show that the LALS run reaches higher best dev accuracy (≈+4 pp) and smoother training while requiring no extra computation or parameters.",
+          "evaluation_metrics": [
+            {
+              "name": "accuracy",
+              "description": "Correctness criteria: a prediction is correct if the final numeric or string answer emitted by greedy decoding EXACTLY matches the gold answer after whitespace trimming. Calculation: accuracy = (number of correct predictions) / (total predictions). Task appropriateness: GSM8K problems each have a single unambiguous answer, so exact match accurately reflects problem-solving success. Visualizations: line plot of dev-set accuracy versus epoch to show convergence, and bar chart comparing best-epoch accuracy between methods."
+            },
+            {
+              "name": "average_training_loss",
+              "description": "Correctness criteria: not used for evaluation but measures optimization behaviour. Calculation: mean cross-entropy loss over all mini-batches in an epoch. Task appropriateness: highlights convergence speed and stability; lower loss generally correlates with higher reasoning capability. Visualizations: learning-curve plot of loss vs. update step and overlay of both methods."
+            },
+            {
+              "name": "effective_lr_variance",
+              "description": "Correctness criteria: none; diagnostic metric. Calculation: variance of effective learning rate (scheduled_lr × adaptive_factor) across an epoch: Var(LR) = E[(LR_t − μ)^2]. Task appropriateness: quantifies how much LALS modulates the base schedule, demonstrating adaptivity without extreme swings. Visualizations: histogram of LR factors and time-series plot of LR_t."
+            }
+          ],
+          "proposed_method": "Loss-Adaptive LR Scaling (LALS): keep standard AdamW optimiser and any scheduler; after computing the current batch loss L_t, update the exponential moving average L̄ ← β·L̄ + (1−β)·L_t (initially L̄ = L_t). Compute scaling factor f_t = clamp((L̄ / (L_t+1e−8))^γ, f_min, f_max) with γ ∈ [0.5,1], f_min < 1 < f_max. Immediately multiply each optimiser param-group’s learning rate by f_t before the backward step. Intuition: if loss spikes (indicating difficult or unstable step) then f_t < 1 reduces LR and prevents divergence; if loss keeps decreasing then f_t > 1 mildly boosts LR and accelerates progress. Implementation is a ~20-line helper class and one assignment inside the training loop, adding near-zero overhead and no extra gradients or parameters. Hyper-parameters recommended: β = 0.98, γ = 0.7, f_min = 0.5, f_max = 1.5.",
+          "comparative_methods": [
+            "AdamW + Cosine Decay with Warm-up (no adaptive scaling)"
+          ],
+          "models_to_use": [
+            "Qwen3-0.6B"
+          ],
+          "datasets_to_use": [
+            "gsm8k"
+          ],
+          "hyperparameters_to_search": [
+            {
+              "name": "base_learning_rate",
+              "range": "1e-5-3e-5"
+            },
+            {
+              "name": "gamma",
+              "range": "0.5-1.0"
+            },
+            {
+              "name": "ema_beta",
+              "range": "0.95-0.995"
+            },
+            {
+              "name": "f_min",
+              "range": "0.3-0.7"
+            },
+            {
+              "name": "f_max",
+              "range": "1.2-2.0"
+            }
+          ]
+        },
+        "experiment_runs": [
+          {
+            "run_id": "proposed-iter1-Qwen3-0.6B-gsm8k",
+            "method_name": "proposed",
+            "model_name": "Qwen3-0.6B",
+            "dataset_name": "gsm8k"
+          },
+          {
+            "run_id": "comparative-1-iter1-Qwen3-0.6B-gsm8k",
+            "method_name": "comparative-1",
+            "model_name": "Qwen3-0.6B",
+            "dataset_name": "gsm8k"
+          }
+        ]
       }
     ]
   }
