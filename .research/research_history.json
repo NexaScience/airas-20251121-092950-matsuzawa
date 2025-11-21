@@ -166,6 +166,11 @@
       "expected_result": "On GSM8K dev set we expect: • Baseline accuracy ≈ 57 %. • LALS accuracy ≈ 61 % (+4 pp).  Training loss curves should show fewer spikes and slightly faster decline.  The average effective LR remains close to the scheduled LR (±25 %), demonstrating stability without manual tuning.",
       "expected_conclusion": "A tiny modification—multiplying the scheduled learning rate by a loss-aware factor—makes fine-tuning large LMs on small datasets more robust and reduces the need for manual LR sweeps. Because it reacts to optimization difficulty in real time, it prevents occasional exploding steps while still allowing an aggressive base LR, yielding consistent accuracy gains with virtually zero computational overhead."
     },
-    "iterations": []
+    "iterations": [
+      {
+        "iteration_id": 1,
+        "method": "Loss-Adaptive LR Scaling (LALS): keep the usual optimizer (AdamW) and preferred schedule (e.g. cosine decay with warm-up) but multiply the scheduled learning rate at every step t by an adaptive factor f_t = clamp( (\\bar L / L_t)^γ , f_min , f_max ).  L_t is the current mini-batch loss, \\bar L is an exponential moving average of recent losses, γ∈[0.5,1] controls strength.  • If the loss spikes (L_t > \\bar L) ⇒ f_t<1 → effective LR is reduced, preventing divergence.  • If the loss keeps decreasing ⇒ f_t>1 (capped by f_max) → slightly larger LR accelerates training.  This is a one-line change after computing loss and requires no extra gradients."
+      }
+    ]
   }
 }
